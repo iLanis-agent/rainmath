@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RainMath - Rainwater Harvesting Math That Holds Up</title>
+<meta name="description" content="Roof catchment, capture efficiency, garden demand, dry-spell tank sizing, first-flush diversion and storms to fill - honest numbers for the rainwater harvester.">
+<link rel="canonical" href="https://ilanis-agent.github.io/rainmath/">
+<meta property="og:title" content="RainMath - Rainwater Harvesting Math That Holds Up">
+<meta property="og:description" content="Roof catchment, capture efficiency, garden demand, dry-spell tank sizing, first-flush diversion and storms to fill - honest numbers for the rainwater harvester.">
+<meta property="og:url" content="https://ilanis-agent.github.io/rainmath/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#1e3d54">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%8C%A7%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0f1b24; --card:#152635; --ink:#e8f0f5; --muted:#93aebe;
+  --accent:#5aa8d1; --accent2:#8fd0e8; --line:#2c4a5e; --good:#8fd18a; --warn:#f2c14e; --bad:#e86a5a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:1rem}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;padding:1.6rem 0 1.2rem}
+h1{font-size:2.1rem;color:var(--accent2);letter-spacing:.5px}
+.tag{color:var(--muted);margin-top:.3rem;font-size:.98rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+.card h2{font-size:1.05rem;color:var(--accent);margin-bottom:.7rem}
+.row{display:flex;flex-wrap:wrap;gap:.9rem;align-items:flex-end;margin:.5rem 0}
+.field{display:flex;flex-direction:column;gap:.25rem}
+label{font-size:.8rem;color:var(--muted)}
+input,select{background:#0d1922;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:.45rem .6rem;font-size:1rem;width:8.5rem}
+input:focus,select:focus{outline:2px solid var(--accent)}
+button{background:var(--accent);color:#0f1b24;border:0;border-radius:8px;padding:.5rem 1.1rem;font-size:.95rem;font-weight:700;cursor:pointer}
+button:hover{background:#74bce3}
+.presets{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .2rem}
+.presets button{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:400;padding:.35rem .8rem;font-size:.85rem}
+.presets button:hover{border-color:var(--accent);color:var(--ink)}
+.big{font-size:1.3rem;font-weight:700;color:var(--accent2)}
+.result{margin-top:.6rem;font-size:1rem;min-height:1.4rem}
+.result small{color:var(--muted);display:block;margin-top:.25rem}
+.verdict-ok{color:var(--good)} .verdict-tight{color:var(--warn)} .verdict-bad{color:var(--bad)}
+.era{font-size:.85rem;color:var(--muted);margin-bottom:.6rem;font-style:italic}
+footer{margin:2rem 0 1rem;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:1rem}
+footer code{color:var(--accent)}
+details{margin-top:.4rem} summary{cursor:pointer;color:var(--muted);font-size:.85rem}
+table{border-collapse:collapse;margin-top:.5rem;font-size:.9rem}
+td,th{border:1px solid var(--line);padding:.3rem .6rem;text-align:left}
+th{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>&#127783; RainMath</h1>
+<p class="tag">Rainwater harvesting math that holds up. Catchment, demand, tank sizing - numbers you can plan a system on.</p>
+</header>
+
+<section class="card" id="c-catch">
+<h2>What a storm gives you</h2>
+<p class="era">One inch of rain on one square foot of roof is 0.623 gallons. Give it your roof and a storm; get the honest capture after losses.</p>
+<div class="presets" id="presets-catch"></div>
+<div class="row">
+  <div class="field"><label for="in-roof">roof catchment (sq ft)</label><input id="in-roof" type="number" min="50" step="50" value="1000"></div>
+  <div class="field"><label for="in-rain">rainfall (in)</label><input id="in-rain" type="number" min="0.05" step="0.05" value="1"></div>
+  <div class="field"><label for="in-eff">capture efficiency (%)</label><input id="in-eff" type="number" min="50" max="100" step="5" value="85"></div>
+</div>
+<button id="btn-catch">Catchment math</button>
+<div class="result" id="out-catch"></div>
+</section>
+
+<section class="card" id="c-demand">
+<h2>What the garden wants</h2>
+<p class="era">Gardens drink about an inch a week in season. Convert your beds to gallons and see how long a tank really lasts.</p>
+<div class="row">
+  <div class="field"><label for="in-garden">garden beds (sq ft)</label><input id="in-garden" type="number" min="10" step="10" value="200"></div>
+  <div class="field"><label for="in-inwk">watering (in/week)</label><input id="in-inwk" type="number" min="0.25" max="3" step="0.25" value="1"></div>
+  <div class="field"><label for="in-tank">tank size (gal)</label><input id="in-tank" type="number" min="10" step="5" value="300"></div>
+</div>
+<button id="btn-demand">Demand math</button>
+<div class="result" id="out-demand"></div>
+</section>
+
+<section class="card" id="c-tank">
+<h2>Dry-spell tank sizing</h2>
+<p class="era">The tank's job is the dry spell, not the storm. Size it against your daily draw and the gap between rains.</p>
+<div class="row">
+  <div class="field"><label for="in-daily">daily use (gal)</label><input id="in-daily" type="number" min="1" step="1" value="12"></div>
+  <div class="field"><label for="in-dry">dry spell (days)</label><input id="in-dry" type="number" min="1" step="1" value="14"></div>
+  <div class="field"><label for="in-have">tank you have (gal)</label><input id="in-have" type="number" min="0" step="5" value="120"></div>
+</div>
+<button id="btn-tank">Tank math</button>
+<div class="result" id="out-tank"></div>
+</section>
+
+<section class="card" id="c-flush">
+<h2>First flush &amp; fill plan</h2>
+<p class="era">The first water off a dry roof carries the dust and droppings - divert it. Then see how many storms fill your tank.</p>
+<div class="row">
+  <div class="field"><label for="in-froof">roof catchment (sq ft)</label><input id="in-froof" type="number" min="50" step="50" value="1000"></div>
+  <div class="field"><label for="in-ftank">tank size (gal)</label><input id="in-ftank" type="number" min="10" step="5" value="550"></div>
+  <div class="field"><label for="in-fstorm">typical storm (in)</label><input id="in-fstorm" type="number" min="0.05" step="0.05" value="0.5"></div>
+</div>
+<button id="btn-flush">Flush &amp; fill math</button>
+<div class="result" id="out-flush"></div>
+</section>
+
+<section class="card" id="c-why">
+<h2>Why these numbers</h2>
+<details><summary>The assumptions, stated honestly</summary>
+<table>
+<tr><th>Constant</th><th>Value</th><th>Why</th></tr>
+<tr><td>Catchment</td><td>0.623 gal / sq ft / in</td><td>One inch of water over one square foot - geometry, not opinion</td></tr>
+<tr><td>Capture efficiency</td><td>75-90% honest</td><td>Gutters leak, splash escapes, screens clog. 100% exists only in brochures</td></tr>
+<tr><td>Garden demand</td><td>~1 in / week</td><td>A working summer rule for beds; containers and heat push it higher</td></tr>
+<tr><td>First flush</td><td>~10 gal / 1000 sq ft</td><td>The first rinse off a dry roof carries dust, droppings and pollen - divert it</td></tr>
+<tr><td>Dry-spell sizing</td><td>daily use x dry days</td><td>The tank bridges the gap between rains, so size it to the gap, not the storm</td></tr>
+</table>
+<p style="margin-top:.5rem;color:var(--muted);font-size:.85rem">Local rainfall decides everything - pair this with your area's monthly averages before buying a tank.</p>
+</details>
+</section>
+
+<footer>
+<p><strong>RainMath</strong> - part of the App Factory collection. Honest small tools, one good idea at a time.</p>
+<p>Source: <code>engine.js</code> (pure functions, tested in CI) &middot; <code>app.html</code> (this UI) &middot; <code>README.md</code></p>
+</footer>
+</div>
+</body>
+</html>
